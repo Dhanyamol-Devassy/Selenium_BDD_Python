@@ -1,0 +1,12 @@
+selenium==4.26.1
+webdriver-manager==4.0.2
+mysql-connector-python==8.0.29
+behave==1.2.6
+pytest==8.3.3
+allure-behave==2.9.45
+allure-pytest==2.9.45
+PyYAML==6.0.1
+allure-python-commons==2.9.45
+pip~=23.3.1
+openpyxl~=3.1.2
+

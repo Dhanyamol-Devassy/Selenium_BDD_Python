@@ -1,0 +1,21 @@
+{
+  "browser":"firefox",
+  "url":"https://www.automationexercise.com/",
+  "firstname":"firstname",
+  "email":"firstname@test.com",
+  "password":"password1234",
+  "lastname":"Lastname",
+  "address":"myAddress",
+  "state":"Alberta",
+  "city":"Edmonton",
+  "zipcode":"3451",
+  "mobileNumber":"+1322323232",
+  "country": "Canada",
+  "contactUsSubject" : "Subject",
+  "contactUsMessage": "message"
+}
+
+
+
+  
+  
