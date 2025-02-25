@@ -4,6 +4,7 @@ import subprocess
 import argparse
 import shutil
 from dotenv import load_dotenv  # Optional for loading .env files
+from selenium import webdriver
 
 # Define the root directory of the project
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -68,10 +69,27 @@ def setup_environment():
     else:
         print(".env file not found, skipping...")
 
+def run_browser_tests():
+    """Runs Selenium WebDriver tests with --user-data-dir argument."""
+    print("Running Selenium WebDriver tests...")
+
+    # Example for initializing Chrome WebDriver with --user-data-dir argument
+    options = webdriver.ChromeOptions()
+    options.add_argument("--user-data-dir=/path/to/your/user/data")  # Specify the directory
+
+    driver = webdriver.Chrome(options=options)
+
+    # Your test logic here (e.g., navigating to a website)
+    driver.get('http://example.com')
+    print("Tests completed.")
+
+    # Close the WebDriver after the test
+    driver.quit()
+
 def main():
     """Main function to handle command-line commands."""
     parser = argparse.ArgumentParser(description="Manage the BDD project")
-    parser.add_argument('command', nargs="?", help="Command to run (e.g., run, test, report, clean, setup)")
+    parser.add_argument('command', nargs="?", help="Command to run (e.g., run, test, report, clean, setup, browser)")
     parser.add_argument('--feature', help="Run a specific feature file")
 
     args = parser.parse_args()
@@ -85,7 +103,8 @@ def main():
         'test': run_tests,
         'report': generate_allure_report,
         'clean': clean_reports,
-        'setup': setup_environment
+        'setup': setup_environment,
+        'browser': run_browser_tests  # New command for browser tests
     }
 
     if args.command in commands:
