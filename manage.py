@@ -70,6 +70,7 @@ def setup_environment():
     else:
         print(".env file not found, skipping...")
 
+<<<<<<< HEAD
 def start_selenium_browser():
     """Starts a Selenium WebDriver session and handles session creation errors."""
     try:
@@ -84,6 +85,24 @@ def start_selenium_browser():
     except Exception as e:
         print(f"Error: Unable to start browser. {str(e)}")
         sys.exit(1)
+=======
+def run_browser_tests():
+    """Runs Selenium WebDriver tests with --user-data-dir argument."""
+    print("Running Selenium WebDriver tests...")
+
+    # Example for initializing Chrome WebDriver with --user-data-dir argument
+    options = webdriver.ChromeOptions()
+    #options.add_argument("--user-data-dir=/path/to/your/user/data")  # Specify the directory
+
+    driver = webdriver.Chrome(options=options)
+
+    # Your test logic here (e.g., navigating to a website)
+    driver.get('http://example.com')
+    print("Tests completed.")
+
+    # Close the WebDriver after the test
+    driver.quit()
+>>>>>>> 245c59f4139f6ab73795b858d1b30450c89ab0e9
 
 def main():
     """Main function to handle command-line commands."""
