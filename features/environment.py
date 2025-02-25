@@ -21,14 +21,22 @@ def load_config():
 def before_all(context):
     """Before any test starts."""
     try:
-        clean_up_directories(context)
-        # Initialize the logger only once
+        # Initialize the logger before any logging actions
         context.logger = get_logger()
+        
+        # Now that the logger is initialized, proceed with other actions
         context.logger.info("Initializing test setup...")
+        
+        clean_up_directories(context)  # Ensure this action doesn't log before the logger is ready
+        
+        # Load configuration
         context.config = load_config()
+        context.logger.info("Configuration loaded successfully.")
+        
     except Exception as e:
         print(f"Error during before_all setup: {str(e)}")
         raise  # Reraise the exception to halt execution
+
 
 def after_all(context):
     """After all tests finish."""
