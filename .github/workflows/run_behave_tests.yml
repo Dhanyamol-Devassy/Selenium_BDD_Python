@@ -26,16 +26,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install psutil
-          pip install allure-behave  # Ensure allure-behave is installed
+          pip install allure-behave
 
       - name: Install Allure Command-Line Tool
         run: |
-          # Install Allure via npm
           npm install -g allure-commandline --save-dev
 
       - name: Run Behave tests
         run: |
-          # Run Behave tests with Allure results
           behave -f allure_behave.formatter:AllureFormatter -o reports/allure-results features
 
       - name: Upload Allure results as artifact
@@ -44,20 +42,12 @@ jobs:
           name: allure-results
           path: reports/allure-results
 
-      - name: Install Allure command-line (Optional: For generating report locally in the workflow)
-        run: |
-          # Install Allure command line to generate the report
-          wget -q https://github.com/allure-framework/allure2/releases/download/2.16.1/allure-2.16.1.zip
-          unzip -q allure-2.16.1.zip
-          sudo mv allure-2.16.1 /opt/allure
-          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
-
       - name: Generate Allure Report
         run: |
           allure generate reports/allure-results --clean -o reports/allure-report
-          allure open reports/allure-report  # Optionally, you can use this if you want to open it
+          allure open reports/allure-report  # Optional: this will open the report in a browser
 
-      - name: Upload Allure Report as Artifact (Optional: If you want to download the report)
+      - name: Upload Allure Report as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
