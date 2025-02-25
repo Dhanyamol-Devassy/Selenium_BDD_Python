@@ -51,7 +51,7 @@ def before_scenario(context, scenario):
         
         # Set Chrome options to use the unique user data directory
         options = webdriver.ChromeOptions()
-        options.add_argument(f'--user-data-dir={user_data_dir}')
+        #options.add_argument(f'--user-data-dir={user_data_dir}')
         
         # Create the WebDriver instance with the updated options
         context.driver = webdriver.Chrome(service=service, options=options)  
