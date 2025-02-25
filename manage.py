@@ -75,7 +75,7 @@ def run_browser_tests():
 
     # Example for initializing Chrome WebDriver with --user-data-dir argument
     options = webdriver.ChromeOptions()
-    options.add_argument("--user-data-dir=/path/to/your/user/data")  # Specify the directory
+    #options.add_argument("--user-data-dir=/path/to/your/user/data")  # Specify the directory
 
     driver = webdriver.Chrome(options=options)
 
