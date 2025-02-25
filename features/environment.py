@@ -56,6 +56,9 @@ def before_scenario(context, scenario):
         
         context.logger.info(f"Created unique user data directory: {user_data_dir}")
 
+        # Kill any existing Chrome processes to avoid using the user data directory
+        kill_chrome_processes()
+
         # Set up the WebDriver with the unique user data directory
         context.logger.info("Setting up WebDriver for scenario...")
         service = Service(ChromeDriverManager().install())  # Set up the Chrome WebDriver service
@@ -74,8 +77,6 @@ def before_scenario(context, scenario):
         context.logger.error(f"Error in before_scenario: {str(e)}")
         raise  # Halt execution if setup fails
 
-
-import time
 
 def after_scenario(context, scenario):
     """After each scenario finishes."""
