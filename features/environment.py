@@ -61,6 +61,8 @@ def before_scenario(context, scenario):
         service = Service(ChromeDriverManager().install())  # Set up the Chrome WebDriver service
         options = webdriver.ChromeOptions()
         options.add_argument(f'--user-data-dir={user_data_dir}')
+        options.add_argument('--no-first-run')  # Prevent first-run initialization
+        options.add_argument('--disable-extensions')  # Disable extensions for the test
         
         context.driver = webdriver.Chrome(service=service, options=options)  # Create the WebDriver instance
         context.driver.maximize_window()  # Maximize the browser window
@@ -71,6 +73,7 @@ def before_scenario(context, scenario):
     except Exception as e:
         context.logger.error(f"Error in before_scenario: {str(e)}")
         raise  # Halt execution if setup fails
+
 
 def after_scenario(context, scenario):
     """After each scenario finishes."""
