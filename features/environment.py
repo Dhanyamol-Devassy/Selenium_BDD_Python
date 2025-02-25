@@ -69,6 +69,7 @@ def before_scenario(context, scenario):
         options.add_argument(f'--user-data-dir={user_data_dir}')
         options.add_argument('--no-first-run')  # Add this option to prevent Chrome from reusing profiles
         
+        # Launch the WebDriver with a clean session
         context.driver = webdriver.Chrome(service=service, options=options)  # Create the WebDriver instance
         context.driver.maximize_window()  # Maximize the browser window
 
@@ -78,7 +79,6 @@ def before_scenario(context, scenario):
     except Exception as e:
         context.logger.error(f"Error in before_scenario: {str(e)}")
         raise  # Halt execution if setup fails
-
 
 def after_scenario(context, scenario):
     """After each scenario finishes."""
