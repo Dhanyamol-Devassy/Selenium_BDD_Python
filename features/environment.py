@@ -2,6 +2,7 @@ import json
 import os
 import time
 import shutil
+import tempfile
 from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -42,10 +43,18 @@ def before_scenario(context, scenario):
     try:
         context.logger.info(f"*****************Starting scenario: {scenario.name}*****************")
         
-        # Set up the WebDriver
+        # Create a temporary directory for user data
+        user_data_dir = tempfile.mkdtemp()
+
         context.logger.info("Setting up WebDriver for scenario...")
         service = Service(ChromeDriverManager().install())  # Set up the Chrome WebDriver service
-        context.driver = webdriver.Chrome(service=service)  # Create the WebDriver instance
+        
+        # Set Chrome options to use the unique user data directory
+        options = webdriver.ChromeOptions()
+        options.add_argument(f'--user-data-dir={user_data_dir}')
+        
+        # Create the WebDriver instance with the updated options
+        context.driver = webdriver.Chrome(service=service, options=options)  
         context.driver.maximize_window()  # Maximize the browser window
 
         # Initialize the DriverUtils class with the driver and logger
@@ -75,6 +84,14 @@ def after_scenario(context, scenario):
                 context.logger.info("WebDriver closed.")
             except Exception as cleanup_error:
                 context.logger.error(f"Error during WebDriver cleanup: {str(cleanup_error)}")
+        
+        # Clean up the temporary user data directory
+        if hasattr(context, 'user_data_dir') and os.path.exists(context.user_data_dir):
+            try:
+                shutil.rmtree(context.user_data_dir)
+                context.logger.info(f"Temporary user data directory '{context.user_data_dir}' cleaned up.")
+            except Exception as cleanup_error:
+                context.logger.error(f"Error during cleanup of user data directory: {str(cleanup_error)}")
 
 
 def capture_screenshot(driver, logger):
@@ -136,4 +153,3 @@ def clean_up_directories(context):
                 print(f"Directory does not exist: {dir_path}")
     except Exception as e:
         context.logger.error(f"Error cleaning up directories: {str(e)}")
-
