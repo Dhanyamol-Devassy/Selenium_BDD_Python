@@ -57,16 +57,17 @@ def before_scenario(context, scenario):
         
         context.logger.info(f"Created unique user data directory: {user_data_dir}")
 
-        # Kill any existing Chrome processes to avoid using the user data directory
-        kill_chrome_processes()
-
+        # Clean the user data directory if necessary
+        if os.path.exists(user_data_dir):
+            shutil.rmtree(user_data_dir)
+        os.makedirs(user_data_dir)
+        
         # Set up the WebDriver with the unique user data directory
         context.logger.info("Setting up WebDriver for scenario...")
         service = Service(ChromeDriverManager().install())  # Set up the Chrome WebDriver service
         options = webdriver.ChromeOptions()
         options.add_argument(f'--user-data-dir={user_data_dir}')
-        options.add_argument('--no-first-run')  # Prevent first-run initialization
-        options.add_argument('--disable-extensions')  # Disable extensions for the test
+        options.add_argument('--no-first-run')  # Add this option to prevent Chrome from reusing profiles
         
         context.driver = webdriver.Chrome(service=service, options=options)  # Create the WebDriver instance
         context.driver.maximize_window()  # Maximize the browser window
