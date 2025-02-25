@@ -5,7 +5,6 @@ import shutil
 import tempfile
 from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
-from selenium.common.exceptions import SessionNotCreatedException
 from webdriver_manager.chrome import ChromeDriverManager
 from utils.logger import get_logger
 from utils.driver_utils import DriverUtils
@@ -34,7 +33,6 @@ def before_all(context):
 def after_all(context):
     """After all tests finish."""
     try:
-        # Cleanup directories if needed
         context.logger.info("Test environment cleanup completed.")
     except Exception as e:
         print(f"Error during after_all cleanup: {str(e)}")
@@ -44,26 +42,21 @@ def before_scenario(context, scenario):
     try:
         context.logger.info(f"*****************Starting scenario: {scenario.name}*****************")
         
-        # Create a temporary directory for user data
-        user_data_dir = tempfile.mkdtemp()
+        # Create a unique temporary user data directory for each scenario
+        user_data_dir = tempfile.mkdtemp(prefix=f"user_data_{int(time.time())}_")  # Ensure unique directory
+        context.user_data_dir = user_data_dir  # Store the path to clean up later
+        
+        context.logger.info(f"Created unique user data directory: {user_data_dir}")
 
+        # Set up the WebDriver with the unique user data directory
         context.logger.info("Setting up WebDriver for scenario...")
-        
-        # Initialize the Chrome WebDriver with options and services
         service = Service(ChromeDriverManager().install())  # Set up the Chrome WebDriver service
-        
-        # Set Chrome options to use the unique user data directory
         options = webdriver.ChromeOptions()
-        # options.add_argument(f'--user-data-dir={user_data_dir}')
+        options.add_argument(f'--user-data-dir={user_data_dir}')
         
-        # Try initializing WebDriver, and handle potential session creation errors
-        try:
-            context.driver = webdriver.Chrome(service=service, options=options)  
-            context.driver.maximize_window()  # Maximize the browser window
-        except SessionNotCreatedException as e:
-            context.logger.error(f"Error: WebDriver session could not be created. {str(e)}")
-            raise  # Halt execution if the WebDriver cannot start
-        
+        context.driver = webdriver.Chrome(service=service, options=options)  # Create the WebDriver instance
+        context.driver.maximize_window()  # Maximize the browser window
+
         # Initialize the DriverUtils class with the driver and logger
         context.driver_utils = DriverUtils(context.driver, context.logger)
         context.logger.info("WebDriver setup complete.")
@@ -155,8 +148,8 @@ def clean_up_directories(context):
                         os.remove(os.path.join(root, name))
                     for name in dirs:
                         shutil.rmtree(os.path.join(root, name))
-                print(f"Cleaned up directory: {dir_path}")
+                context.logger.info(f"Cleaned up directory: {dir_path}")
             else:
-                print(f"Directory does not exist: {dir_path}")
+                context.logger.warning(f"Directory does not exist: {dir_path}")
     except Exception as e:
         context.logger.error(f"Error cleaning up directories: {str(e)}")
