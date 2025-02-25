@@ -102,11 +102,20 @@ def after_scenario(context, scenario):
         # Clean up the temporary user data directory
         if hasattr(context, 'user_data_dir') and os.path.exists(context.user_data_dir):
             try:
-                time.sleep(1)  # Add a small delay before cleanup
                 shutil.rmtree(context.user_data_dir)
                 context.logger.info(f"Temporary user data directory '{context.user_data_dir}' cleaned up.")
             except Exception as cleanup_error:
                 context.logger.error(f"Error during cleanup of user data directory: {str(cleanup_error)}")
+
+def kill_chrome_processes():
+    """Kill any remaining Chrome processes to avoid user data directory being in use."""
+    for proc in psutil.process_iter(['pid', 'name']):
+        if 'chrome' in proc.info['name'].lower():
+            try:
+                proc.kill()
+                print(f"Killed process {proc.info['name']} with PID {proc.info['pid']}")
+            except psutil.NoSuchProcess:
+                pass  # Process has already been terminated
 
 
 def capture_screenshot(driver, logger):
