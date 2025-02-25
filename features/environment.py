@@ -75,6 +75,8 @@ def before_scenario(context, scenario):
         raise  # Halt execution if setup fails
 
 
+import time
+
 def after_scenario(context, scenario):
     """After each scenario finishes."""
     try:
@@ -99,6 +101,7 @@ def after_scenario(context, scenario):
         # Clean up the temporary user data directory
         if hasattr(context, 'user_data_dir') and os.path.exists(context.user_data_dir):
             try:
+                time.sleep(1)  # Add a small delay before cleanup
                 shutil.rmtree(context.user_data_dir)
                 context.logger.info(f"Temporary user data directory '{context.user_data_dir}' cleaned up.")
             except Exception as cleanup_error:
