@@ -1,0 +1,7 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","2605","Verify testcases page","","Tue Feb 25 21:04:50 UTC 2025","passed","Tue Feb 25 21:04:53 UTC 2025","","","",""
+"","4006","Register with existing email address","","Tue Feb 25 21:04:46 UTC 2025","passed","Tue Feb 25 21:04:50 UTC 2025","","","",""
+"","6552","Scenario","","Tue Feb 25 21:04:20 UTC 2025","passed","Tue Feb 25 21:04:27 UTC 2025","","","",""
+"","10456","Register User Successfully","","Tue Feb 25 21:04:36 UTC 2025","passed","Tue Feb 25 21:04:46 UTC 2025","","","",""
+"","4179","Login User with incorrect email and password","","Tue Feb 25 21:04:32 UTC 2025","passed","Tue Feb 25 21:04:36 UTC 2025","","","",""
+"","5253","Login User with correct email and password and logout","","Tue Feb 25 21:04:27 UTC 2025","passed","Tue Feb 25 21:04:32 UTC 2025","","","",""
