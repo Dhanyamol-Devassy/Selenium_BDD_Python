@@ -5,6 +5,7 @@ import shutil
 import tempfile
 from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
+from selenium.common.exceptions import SessionNotCreatedException
 from webdriver_manager.chrome import ChromeDriverManager
 from utils.logger import get_logger
 from utils.driver_utils import DriverUtils
@@ -33,7 +34,7 @@ def before_all(context):
 def after_all(context):
     """After all tests finish."""
     try:
-        #clean_up_directories(context)
+        # Cleanup directories if needed
         context.logger.info("Test environment cleanup completed.")
     except Exception as e:
         print(f"Error during after_all cleanup: {str(e)}")
@@ -47,16 +48,22 @@ def before_scenario(context, scenario):
         user_data_dir = tempfile.mkdtemp()
 
         context.logger.info("Setting up WebDriver for scenario...")
+        
+        # Initialize the Chrome WebDriver with options and services
         service = Service(ChromeDriverManager().install())  # Set up the Chrome WebDriver service
         
         # Set Chrome options to use the unique user data directory
         options = webdriver.ChromeOptions()
         options.add_argument(f'--user-data-dir={user_data_dir}')
         
-        # Create the WebDriver instance with the updated options
-        context.driver = webdriver.Chrome(service=service, options=options)  
-        context.driver.maximize_window()  # Maximize the browser window
-
+        # Try initializing WebDriver, and handle potential session creation errors
+        try:
+            context.driver = webdriver.Chrome(service=service, options=options)  
+            context.driver.maximize_window()  # Maximize the browser window
+        except SessionNotCreatedException as e:
+            context.logger.error(f"Error: WebDriver session could not be created. {str(e)}")
+            raise  # Halt execution if the WebDriver cannot start
+        
         # Initialize the DriverUtils class with the driver and logger
         context.driver_utils = DriverUtils(context.driver, context.logger)
         context.logger.info("WebDriver setup complete.")

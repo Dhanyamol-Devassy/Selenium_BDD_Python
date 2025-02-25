@@ -5,6 +5,7 @@ import argparse
 import shutil
 from dotenv import load_dotenv  # Optional for loading .env files
 from selenium import webdriver
+from selenium.common.exceptions import SessionNotCreatedException
 
 # Define the root directory of the project
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -69,27 +70,26 @@ def setup_environment():
     else:
         print(".env file not found, skipping...")
 
-def run_browser_tests():
-    """Runs Selenium WebDriver tests with --user-data-dir argument."""
-    print("Running Selenium WebDriver tests...")
-
-    # Example for initializing Chrome WebDriver with --user-data-dir argument
-    options = webdriver.ChromeOptions()
-    options.add_argument("--user-data-dir=/path/to/your/user/data")  # Specify the directory
-
-    driver = webdriver.Chrome(options=options)
-
-    # Your test logic here (e.g., navigating to a website)
-    driver.get('http://example.com')
-    print("Tests completed.")
-
-    # Close the WebDriver after the test
-    driver.quit()
+def start_selenium_browser():
+    """Starts a Selenium WebDriver session and handles session creation errors."""
+    try:
+        print("Starting Selenium WebDriver...")
+        driver = webdriver.Chrome()  # Adjust this based on your preferred browser/driver
+        driver.get("https://example.com")  # Example URL to load
+        return driver
+    except SessionNotCreatedException as e:
+        print(f"Error: Session not created. {str(e)}")
+        print("This might be due to a mismatch between the WebDriver and browser version.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error: Unable to start browser. {str(e)}")
+        sys.exit(1)
 
 def main():
     """Main function to handle command-line commands."""
     parser = argparse.ArgumentParser(description="Manage the BDD project")
-    parser.add_argument('command', nargs="?", help="Command to run (e.g., run, test, report, clean, setup, browser)")
+    parser.add_argument('command', nargs="?", help="Command to run (e.g., run, test, report, clean, setup)")
+
     parser.add_argument('--feature', help="Run a specific feature file")
 
     args = parser.parse_args()
@@ -104,7 +104,7 @@ def main():
         'report': generate_allure_report,
         'clean': clean_reports,
         'setup': setup_environment,
-        'browser': run_browser_tests  # New command for browser tests
+        'start-selenium': start_selenium_browser  # Added Selenium command
     }
 
     if args.command in commands:
