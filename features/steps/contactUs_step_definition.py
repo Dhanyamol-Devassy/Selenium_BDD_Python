@@ -37,5 +37,5 @@ def step_impl(context):
         context.driver_utils.scroll_into_view_and_click(By.XPATH, ContactUsPageXPaths.submit_button_contactUs)
         context.logger.info("Contact Us form submitted successfully.")
     except Exception as e:
-        context.logger.error(f"Error filling out Contact Us form: {e}")
-        raise
+        context.logger.error(f"Error in step The user fills in contact us information")
+        assert False, f"Error in step The user fills in contact us information"
