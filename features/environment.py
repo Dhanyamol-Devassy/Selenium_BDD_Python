@@ -3,6 +3,7 @@ import os
 import time
 import shutil
 import tempfile
+import allure
 from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -121,7 +122,7 @@ def kill_chrome_processes():
 
 
 def capture_screenshot(driver, logger):
-    """Capture a screenshot for failed steps."""
+    """Capture a screenshot for failed steps and attach it to Allure report."""
     try:
         screenshot_dir = os.path.join(os.getcwd(), 'reports/screenshots')
         if not os.path.exists(screenshot_dir):
@@ -130,6 +131,11 @@ def capture_screenshot(driver, logger):
         screenshot_path = os.path.join(screenshot_dir, f'{int(time.time())}.png')
         driver.save_screenshot(screenshot_path)
         logger.error(f"Screenshot saved: {screenshot_path}")
+        
+        # Attach the screenshot to the Allure report
+        with open(screenshot_path, "rb") as file:
+            allure.attach(file.read(), name="Failure Screenshot", attachment_type=allure.attachment_type.PNG)
+
     except Exception as e:
         logger.error(f"Error capturing screenshot: {str(e)}")
 
