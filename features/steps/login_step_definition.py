@@ -20,7 +20,7 @@ def step_impl(context):
         # Log the error with detailed message
         context.logger.error("Error in step: The user enters correct login name and email address")     
         # Reraise the exception to ensure the test fails
-        raise
+        assert False, f"Error in step The user enters correct login name and email address"
     
 #name and email address are generated randomly during runtime   
 @When("The user enters incorrect login name and email address")
@@ -39,7 +39,7 @@ def step_impl(context):
         # Log the error with detailed message
         context.logger.error("Error in step: The user enters incorrect login name and email address")     
         # Reraise the exception to ensure the test fails
-        raise
+        assert False, f"Error in step The user enters incorrect login name and email address"
     
 @Then('Verify that Logged in as username is visible')
 def step_impl(context):
@@ -50,11 +50,11 @@ def step_impl(context):
         assert actual_text.strip() == expected_text.strip(), f"Expected text: '{expected_text}', but got: '{actual_text.strip()}'"
         context.logger.info(f"Text '{expected_text}' is correctly visible on the page.")
     
-    except AssertionError as e:
+    except AssertionError as ae:
             # Log if the assertion fails
         context.logger.error(f"Text mismatch: Expected '{expected_text}', but found '{actual_text.strip()}'.")
-        raise
+        assert False, f"Test failed: {ae}"
     except Exception as e:
             # Log the error and raise it
         context.logger.error(f"Error in step: Verify that Logged in as username is visible")
-        raise
+        assert False, f"Error in step Verify that Logged in as username is visible"
