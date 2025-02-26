@@ -1,4 +1,4 @@
-name: Run Behave Tests and Publish Allure Report
+name: Run Behave Tests
 
 on:
   push:
@@ -34,15 +34,7 @@ jobs:
 
       - name: Run Behave tests
         run: |
-          mkdir -p reports/allure-results  # Ensure results directory exists
           behave -f allure_behave.formatter:AllureFormatter -o reports/allure-results features
-
-      - name: Check if Allure results exist
-        run: |
-          if [ ! -d "reports/allure-results" ] || [ -z "$(ls -A reports/allure-results)" ]; then
-            echo "Error: Allure results directory is missing or empty!"
-            exit 1
-          fi
 
       - name: Upload Allure results as artifact
         uses: actions/upload-artifact@v4
@@ -52,16 +44,7 @@ jobs:
 
       - name: Generate Allure Report
         run: |
-          mkdir -p reports/allure-report  # Ensure the report directory exists
           allure generate reports/allure-results --clean -o reports/allure-report
-          ls -la reports/allure-report  # Debugging step to verify files exist
-
-      - name: Verify Allure Report
-        run: |
-          if [ ! -d "reports/allure-report" ] || [ -z "$(ls -A reports/allure-report)" ]; then
-            echo "Error: Allure report generation failed!"
-            exit 1
-          fi
 
       - name: Upload Allure Report as Artifact
         uses: actions/upload-artifact@v4
@@ -72,28 +55,24 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    permissions:
+      contents: write  # Grants permission to push changes
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Download Allure Report Artifact
+      - name: Download Allure Report
         uses: actions/download-artifact@v4
         with:
           name: allure-report
           path: reports/allure-report
-
-      - name: Verify Allure Report Before Deployment
-        run: |
-          if [ ! -d "reports/allure-report" ] || [ -z "$(ls -A reports/allure-report)" ]; then
-            echo "Error: Allure report is missing or empty before deployment!"
-            exit 1
-          fi
 
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: reports/allure-report
-          keep_files: true  # Prevents deleting existing files on GitHub Pages
 
