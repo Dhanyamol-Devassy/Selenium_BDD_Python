@@ -24,8 +24,7 @@ def step_impl(context):
     except Exception as e:
         # Log the error with detailed message
         context.logger.error("Error in step: The user is on the home page url")    
-        # Reraise the exception to ensure the test fails
-        raise
+        assert False, f"Error in step: The user is on the home page url"
     
 #name and email address are generated randomly during runtime   
 @When("The user enters name and email address")
@@ -46,8 +45,7 @@ def step_impl(context):
     except Exception as e:
         # Log the error with detailed message
         context.logger.error("Error in step: The user enters name and email address")     
-        # Reraise the exception to ensure the test fails
-        raise
+        assert False, f"Error in step: The user enters name and email address"
     
 #uses predefined name and email in the config.json 
 @When("The user enters name and email address from test data")
@@ -60,8 +58,7 @@ def step_impl(context):
     except Exception as e:
         # Log the error with detailed message
         context.logger.error("Error in step: The user enters name and email address")     
-        # Reraise the exception to ensure the test fails
-        raise
+        assert False, f"Error in step: The user enters name and email address"
 
 @When('The user fills in account information')
 def step_impl(context):
@@ -120,7 +117,7 @@ def step_impl(context):
         
         except Exception as e:
             context.logger.error("Error in step: The user fills in account information")
-            raise
+            assert False, f"Error in step: The user fills in account information"
         
     
         
