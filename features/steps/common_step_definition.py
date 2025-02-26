@@ -23,8 +23,8 @@ def step_impl(context, string):
         context.driver_utils.click_element(By.XPATH, xpath)
         context.logger.info(f"Clicked the '{string}' button on the home page.")
     except Exception as e:
-        context.logger.error(f"Error clicking the '{string}' button: {e}")
-        raise
+        context.logger.error(f"Error clicking the '{string}' button")
+        assert False, f"Error clicking the '{string}' button"
 
 @Then("The {string} section should be visible")
 def step_impl(context, string):
@@ -36,8 +36,8 @@ def step_impl(context, string):
         else:
             raise AssertionError(f"The section '{string}' should be visible, but it is not.")
     except Exception as e:
-        context.logger.error(f"Error verifying visibility of section '{string}': {e}")
-        raise
+        context.logger.error(f"Error in step The '{string}' section should be visible")
+        assert False, f"Error in step The '{string}' section should be visible"
 
 @When("The user clicks on {string} button")
 def step_impl(context, string):
@@ -46,8 +46,8 @@ def step_impl(context, string):
         xpath = CommonXPaths.any_button % string
         context.driver_utils.click_element(By.XPATH, xpath)
     except Exception as e:
-        context.logger.error(f"Error clicking the '{string}' button: {e}")
-        raise
+        context.logger.error(f"Error clicking the '{string}' button")
+        assert False, f"Error in step The user clicks on {string} button"
 
 @Then("The {string1} header should be visible")
 def step_impl(context, string1):
@@ -68,12 +68,12 @@ def step_impl(context, string1):
         context.logger.info(f"Text '{string1}' is correctly visible on the page.")
     except AssertionError as ae:
         context.logger.error(f"Assertion failed")
-        raise
+        assert False, f"Text '{string1}' is not visible on the page"
     
     except Exception as e:
             # Log the error and raise it
         context.logger.error(f"Error in step: Verify that {string1} is visible")
-        raise
+        assert False, f"Error in step: Verify that {string1} is visible"
     
 
 @When("Click OK button in the prompt")
@@ -82,8 +82,8 @@ def step_impl(context):
     try:
         context.driver_utils.accept_alert()
     except Exception as e:
-        context.logger.error(f"Error clicking OK in prompt: {e}")
-        raise
+        context.logger.error(f"Error clicking OK in prompt")
+        assert False, f"Error in step Click OK button in the prompt"
 
 @Then('Verify the user is on the home page')
 def step_impl(context):
@@ -96,10 +96,10 @@ def step_impl(context):
         context.logger.info("User is on the home page.")
     except AssertionError as ae:
         context.logger.error(f"URL mismatch: {ae}")
-        raise
+        assert False, f"Test failed: {ae}"
     except Exception as e:
-        context.logger.error(f"Error verifying homepage URL: {e}")
-        raise
+        context.logger.error(f"Verify the user is on the home page")
+        assert False, f"Verify the user is on the home page"
 
 @Then("Verify the user is on the {string} page")
 def step_impl(context, string):
@@ -117,10 +117,10 @@ def step_impl(context, string):
         context.logger.info(f"User is on the '{string}' page.")
     except AssertionError as ae:
         context.logger.error(f"URL mismatch for '{string}': {ae}")
-        raise
+        assert False, f"Test failed: {ae}"
     except Exception as e:
-        context.logger.error(f"Error verifying '{string}' page: {e}")
-        raise
+        context.logger.error(f"Error in step Verify the user is on the '{string}' page")
+        assert False, f"Error in step Verify the user is on the '{string}' page"
 
 
 
